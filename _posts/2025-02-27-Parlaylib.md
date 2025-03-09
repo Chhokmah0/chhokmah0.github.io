@@ -102,6 +102,13 @@ parallel-for 循环的粒度是对调度器的一个提示，即应该按顺序�
 
 注意，锁有时可能被隐式获取，即使它们并不明显。例如，初始化函数作用域里的静态变量隐式地需要一个锁，因为它们的初始化被要求是线程安全的。因此，如果代码可能会在多个并行调用期间竞争初始化静态变量，则应该将这些调用的 `conservative` 设置为 `true`。
 
+```cpp
+void not_obvious_mutex() {
+    static parlay::sequence<int> a(1000);
+    parlay::parallel_for(0, 1000, [&](size_t i) { a[i] = i; }, 0, true);
+}
+```
+
 ## 详细内容
 
 ### 数据类型
