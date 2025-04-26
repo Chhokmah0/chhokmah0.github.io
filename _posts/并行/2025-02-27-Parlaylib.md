@@ -1,7 +1,7 @@
 ---
 title: Parlaylib 的介绍和使用
 date: 2025-2-13 12:00:00 +0800
-categories: [笔记，并行计算]
+categories: [笔记, 并行计算]
 tags: [并行计算]     # TAG names should always be lowercase
 math: true
 ---
