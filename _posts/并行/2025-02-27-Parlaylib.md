@@ -98,6 +98,8 @@ parallel-for 循环的粒度是对调度器的一个提示，即应该按顺序�
 
 > Parlaylib 会将任务拆分出 1/3 用于让其它线程偷取任务。对于剩下的部分，会先试着运行前面的任务一段时间，再根据运行的时间来设定颗粒度。
 {: .prompt-tip}
+> 值得注意的是，在测量任务耗时时，parlaylib 会调用两次 `steady_clock::now()`，因此最好不要将热点路径上的函数的 granularity 设置为 0。大部分函数都有默认计算得出的 granularity，而一些函数例如 `parallel_for`、`map`、`for_each` 默认的 granularity 都是 0，`for_each` 甚至没有手动设置 granularity 的接口。
+{: .prompt-tip}
 
 #### 保守调度
 
@@ -159,7 +161,7 @@ struct {
 
 一般推荐使用 `parlay::tabulate` 函数来构建 `sequence` 类型。
 
-> 使用 `sequence` 而非 `vector` 的原因在于要用自己的内存分配器。在多线程环境下，不优秀的内存分配可能会导致频繁的系统调用，徒增运行常数。
+> 使用 `sequence` 而非 `vector` 的原因在于要用自己的内存分配器。在多线程环境下，不优秀的内存分配可能会导致频繁的系统调用，徒增运行常数。同时这也表明 `std::map` 等也应该少用。
 {: .prompt-tip}
 
 #### delayed_sequence
@@ -202,6 +204,9 @@ template <
 ```
 
 `slice` 是随机访问迭代器 `range` 的非所有视图。它表示一对迭代器，并允许方便地遍历和访问相应迭代器范围的元素。`It` 表示迭代器类型，`S` 表示迭代器最终的哨兵类型，通常来讲他们和 `It` 是相同的，但也不尽然。
+
+> c++20 的 `ranges` 库也采取了这一设计，首尾迭代器类型不同允许尾迭代器返回一个空类型。在比较 `It` 和 `S` 时仅通过 `It` 的状态判断是否应该停止循环。这一设计可以优化掉尾迭代器的内存占用。
+{: .prompt-tip}
 
 切片的一个比较重要的函数是 `slice<It, It> cut(size_t ss, size_t ee) const`，可以返回从 `ss` 到 `ee` 的新切片。
 
