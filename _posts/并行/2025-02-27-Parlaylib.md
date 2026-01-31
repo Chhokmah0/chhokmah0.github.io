@@ -5,7 +5,6 @@ categories: [笔记, 并行计算]
 tags: [并行计算]     # TAG names should always be lowercase
 math: true
 ---
-# Parlaylib
 
 [Parlaylib](https://github.com/cmuparlay/parlaylib) 是一个在共享内存多核机器上的并行库。其包含一个顺序数据结构 `sequence`（类似于 `std::vector`）、许多并行算法、支持嵌套并行的工作窃取调度器、一个可扩展的内存分配器。[这里是其主页](https://cmuparlay.github.io/parlaylib/)。
 
